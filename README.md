@@ -5,7 +5,7 @@ This repository contains the files for the CFD study of a turbulent flow over a 
 - `0/` : Initial and boundary conditions for OpenFOAM simulation
 - `constant/` : Physical properties, turbulence models, and mesh
 - `system/` : Solver controls and numerical schemes
-- `report/` : PDF and LaTeX source of the report
+- `report/` : PDF of the report
 
 ## Objective
 - Compare OpenFOAM and STAR-CCM+ predictions with experimental data provided by Seegmiller and Driver[1]
