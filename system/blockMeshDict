@@ -1,1 +1,187 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+
+convertToMeters 0.01;
+
+vertices
+(
+
+     
+
+    (-165.1 1.27 -0.5)     //vert 0
+    (-165.1 11.43 -0.5)    //vert 1
+    (-139.7 1.27 -0.5)           //vert 2
+    (-139.7 11.43 -0.5)        //vert 3
+    (0 0 -0.5)       //vert 4
+    (0 1.27 -0.5)          //vert 5
+    (0 11.43 -0.5)      // vert 6
+    (50 0 -0.5)     //vert 7
+
+    (50 4 -0.5)    //vert 8
+    (50 11.43 -0.5)   //vert 9
+    (-165.1 1.27 0.5)           //vert 10
+    (-165.1 11.43 0.5)        //vert 11
+    (-139.7 1.27 0.5)       //vert 12
+    (-139.7 11.43 0.5)          //vert 13
+    (0 0 0.5)       // vert 14
+    (0 1.27 0.5)      //vert 15
+    (0 11.43 0.5)      //vert 16
+    (50 0 0.5)      //vert 17
+    (50 4 0.5)      //vert 18
+    (50 11.43 0.5)      //vert 19
+    
+    
+    //New blocks at the beginning of the step
+    (35 0 -0.5)        //vert 20
+    (35 1.27 -0.5)        //vert 21
+    (35 11.47 -0.5)        //vert 22
+    (35 0 0.5)        //vert 23
+    (35 1.27 0.5)        //vert 24
+    (35 11.47 0.5)        //vert 25
+    
+    
+    
+);
+
+
+ySpacing ((0.3 0.47 250)(0.2 0.06 1)(0.3 0.47 0.004));
+ySpacing2 ((0.75 0.35 1)(0.25 0.75 0.004));
+yWall ((0.5 0.5 100)(0.5 0.5 0.03));
+yLower1 ((0.4 0.7 50)(0.6 0.3 1));
+yLower2 ((1 1 50));
+yUpper1 ((0.1 0.2 2)(0.75 0.35 5)(0.25 0.45 0.005));
+
+yinlet
+(
+    (0.8 4.5 4)     
+    (4 10 0.82) 
+    (0.8 4.5 0.25)      
+);
+yinlet2
+(
+    (0.8 4.5 4)     
+    (4 10 0.82)     
+);
+
+blocks
+(
+    hex (0 2 3 1 10 12 13 11)          //blk1
+    (20 85 1)
+    simpleGrading (1 $ySpacing 1)
+
+    hex (2 5 6 3 12 15 16 13)          //blk2
+    (280 85 1)
+    simpleGrading (0.05 $ySpacing 1)
+
+    hex (5 21 22 6 15 24 25 16)        //blk3
+    (420 85 1)
+    edgeGrading (1 1 1 1 $ySpacing $yUpper1 $yUpper1 $ySpacing 1 1 1 1)
+    
+    hex (21 8 9 22 24 18 19 25)        //blk4
+    (65 85 1)
+    edgeGrading (10 10 10 10 $yUpper1 $ySpacing2 $ySpacing2 $yUpper1 1 1 1 1)
+    
+    hex (4 20 21 5 14 23 24 15)        //blk5
+    (420 80 1)
+    edgeGrading (1 1 1 1 $yWall $yLower1 $yLower1 $yWall  1 1 1 1)
+    
+    hex (20 7 8 21 23 17 18 24)        //blk6
+    (65 80 1)
+    edgeGrading (10 10 10 10 $yLower1 $yLower2 $yLower2  $yLower1  1 1 1 1)
+
+);
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 1 11 10)
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (7 8 18 17)
+            (8 9 19 18)
+        );
+    }
+    
+     upperWallSym
+    {
+        type symmetryPlane;
+        faces
+        (
+            (1 3 13 11)
+        );
+    }
+    upperWall
+    {
+        type wall;
+        faces
+        (
+            (3 6 16 13)
+            (6 22 25 16)
+            (22 9 19 25)
+        );
+    }
+    
+    lowerWallSym
+    {
+        type symmetryPlane;
+        faces
+        (
+            (0 2 12 10)
+        );
+    }
+    
+    lowerWall
+    {
+        type wall;
+        faces
+        (
+            (2 5 15 12)
+            (4 5 15 14)
+            (4 20 23 14)
+            (20 7 17 23)
+        );
+    }
+    
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+            (0 2 3 1)
+            (2 5 6 3)
+            (5 21 22 6)
+            (21 8 9 22)
+            (10 12 13 11)
+            (12 15 16 13)
+            (15 24 25 16)
+            (24 18 19 25)
+            (14 23 24 15)
+            (23 17 18 24)
+            
+        );
+    }
+);
+
+// ************************************************************************* //
